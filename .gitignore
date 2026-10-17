@@ -73,3 +73,9 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Release builds copied by scripts/build-release.js
+/release/
+
+# Signing keys never belong in this public repo
+*.jks

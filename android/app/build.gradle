@@ -92,15 +92,26 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        // Play upload key. Its path and passwords live in ~/.gradle/gradle.properties
+        // (outside this public repo) as HELPMECROSS_UPLOAD_STORE_FILE, _STORE_PASSWORD,
+        // _KEY_ALIAS and _KEY_PASSWORD.
+        if (project.hasProperty('HELPMECROSS_UPLOAD_STORE_FILE')) {
+            release {
+                storeFile file(HELPMECROSS_UPLOAD_STORE_FILE)
+                storePassword HELPMECROSS_UPLOAD_STORE_PASSWORD
+                keyAlias HELPMECROSS_UPLOAD_KEY_ALIAS
+                keyPassword HELPMECROSS_UPLOAD_KEY_PASSWORD
+            }
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            // Falls back to the debug key (fine for local testing, rejected by Play)
+            // until the upload key properties are set up.
+            signingConfig signingConfigs.findByName('release') ?: signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
         }
