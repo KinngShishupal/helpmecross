@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AD_UNITS, ADS_PER_HINT, showAdsInARow } from '../ads';
+import { AD_UNITS, showRewardedAd } from '../ads';
 import { ICONS, IMAGES } from '../assets/images';
 import { audio } from '../audio';
 import { Clouds, RiverRipples } from '../components/Ambience';
@@ -100,10 +100,10 @@ export default function GameScreen({ level, onExit, onWin, onNext }: Props) {
   const [showRules, setShowRules] = useState(true);
   const [hop, setHop] = useState<Hop | null>(null);
   const [landed, setLanded] = useState<string | null>(null);
-  /** The hint offer dialog ("watch ads for a hint"). */
+  /** The hint offer dialog ("watch an ad for a hint"). */
   const [hintOffer, setHintOffer] = useState(false);
-  /** Which ad is playing (1-based) while a hint is being earned, or 0. */
-  const [adNumber, setAdNumber] = useState(0);
+  /** True while the rewarded ad for a hint is loading or playing. */
+  const [watchingAd, setWatchingAd] = useState(false);
 
   const boatX = useRef(new Animated.Value(0)).current;
   const shake = useRef(new Animated.Value(0)).current;
@@ -115,7 +115,7 @@ export default function GameScreen({ level, onExit, onWin, onNext }: Props) {
   const state = history[history.length - 1].state;
   const elapsed = history[history.length - 1].elapsed;
   const moves = history.length - 1;
-  const busy = status !== 'playing' || hop !== null || adNumber > 0;
+  const busy = status !== 'playing' || hop !== null || watchingAd;
   const readyToRow = !busy && departureError(level, boat) === null;
 
   // ---------------------------------------------------------------- layout --
@@ -335,17 +335,23 @@ export default function GameScreen({ level, onExit, onWin, onNext }: Props) {
     setHintOffer(true);
   };
 
-  /** Plays the ads one after another, then reveals the hint. */
-  const watchAdsForHint = async () => {
+  /** Plays a rewarded ad, then reveals the hint if the reward was earned. */
+  const watchAdForHint = async () => {
     setHintOffer(false);
+    setWatchingAd(true);
     audio.setMusic(false);
+    let earned = false;
     try {
-      await showAdsInARow(ADS_PER_HINT, setAdNumber);
+      earned = await showRewardedAd();
     } finally {
-      setAdNumber(0);
+      setWatchingAd(false);
       audio.setMusic(settings.music);
     }
-    revealHint();
+    if (earned) {
+      revealHint();
+    } else {
+      say('Watch the whole ad to get your hint.');
+    }
   };
 
   const revealHint = () => {
@@ -496,18 +502,16 @@ export default function GameScreen({ level, onExit, onWin, onNext }: Props) {
       <Dialog visible={hintOffer} onRequestClose={() => setHintOffer(false)} width={Math.min(W * 0.5, 440)}>
         <Image source={ICONS.hint} style={styles.hintIcon} />
         <Text style={styles.dialogTitle}>Need a hint?</Text>
-        <Text style={styles.dialogText}>Watch {ADS_PER_HINT} short ads and we will show you the next move.</Text>
+        <Text style={styles.dialogText}>Watch a short ad and we will show you the next move.</Text>
         <View style={styles.dialogButtons}>
           <DialogButton label="NO THANKS" onPress={() => setHintOffer(false)} />
-          <DialogButton label="WATCH ADS" onPress={watchAdsForHint} primary />
+          <DialogButton label="WATCH AD" onPress={watchAdForHint} primary />
         </View>
       </Dialog>
 
-      {adNumber > 0 && (
+      {watchingAd && (
         <View style={[StyleSheet.absoluteFill, styles.adOverlay]}>
-          <Text style={styles.adOverlayText}>
-            Ad {adNumber} of {ADS_PER_HINT}
-          </Text>
+          <Text style={styles.adOverlayText}>Loading ad</Text>
           <Text style={styles.adOverlaySub}>Your hint is on its way...</Text>
         </View>
       )}
@@ -690,7 +694,8 @@ const styles = StyleSheet.create({
   },
   banner: {
     alignItems: 'center',
-    marginTop: 12,
+    // keep clear of the dialog buttons so taps don't land on the ad by accident
+    marginTop: 24,
     minHeight: 50,
   },
   hintIcon: {

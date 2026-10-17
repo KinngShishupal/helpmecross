@@ -1,17 +1,22 @@
-import mobileAds, { AdEventType, InterstitialAd, TestIds } from 'react-native-google-mobile-ads';
+import { Platform } from 'react-native';
+import mobileAds, { AdEventType, RewardedAd, RewardedAdEventType, TestIds } from 'react-native-google-mobile-ads';
 
-/**
- * Ad unit IDs. These are Google's public test units, which always serve test
- * ads. Before publishing, replace them with your own AdMob units (and the app
- * IDs in app.json).
- */
-export const AD_UNITS = {
-  interstitial: TestIds.INTERSTITIAL,
-  banner: TestIds.BANNER,
+/** Live AdMob units for the Android app (app ID is in app.json). */
+const ANDROID_UNITS = {
+  banner: 'ca-app-pub-8284285672679424/7068116930',
+  rewarded: 'ca-app-pub-8284285672679424/5330784424',
 };
 
-/** How many interstitials play before a hint is revealed. */
-export const ADS_PER_HINT = 2;
+/**
+ * Debug builds always use Google's test units so you never tap your own live
+ * ads. iOS has no AdMob app yet, so it stays on test units too.
+ */
+const live = Platform.OS === 'android' && !__DEV__;
+
+export const AD_UNITS = {
+  banner: live ? ANDROID_UNITS.banner : TestIds.BANNER,
+  rewarded: live ? ANDROID_UNITS.rewarded : TestIds.REWARDED,
+};
 
 /** Give up on an ad that hasn't loaded after this long, so players are never stuck. */
 const LOAD_TIMEOUT_MS = 8000;
@@ -23,39 +28,38 @@ export function initAds() {
   return initialized;
 }
 
-/** Loads and shows one interstitial; resolves when it closes, fails or times out. */
-function showOne(): Promise<void> {
+/**
+ * Loads and shows one rewarded ad. Resolves `true` when the player earned the
+ * reward, or when no ad could be shown (so a missing ad never blocks a hint),
+ * and `false` when they closed the ad before earning it.
+ */
+export async function showRewardedAd(): Promise<boolean> {
+  await initAds();
   return new Promise(resolve => {
-    const ad = InterstitialAd.createForAdRequest(AD_UNITS.interstitial);
+    const ad = RewardedAd.createForAdRequest(AD_UNITS.rewarded);
+    let shown = false;
+    let earned = false;
     let finished = false;
-    const finish = () => {
+    const finish = (result: boolean) => {
       if (finished) {
         return;
       }
       finished = true;
       clearTimeout(timer);
       ad.removeAllListeners();
-      resolve();
+      resolve(result);
     };
-    const timer = setTimeout(finish, LOAD_TIMEOUT_MS);
-    ad.addAdEventListener(AdEventType.LOADED, () => {
+    const timer = setTimeout(() => finish(true), LOAD_TIMEOUT_MS);
+    ad.addAdEventListener(RewardedAdEventType.LOADED, () => {
       clearTimeout(timer);
-      ad.show().catch(finish);
+      shown = true;
+      ad.show().catch(() => finish(true));
     });
-    ad.addAdEventListener(AdEventType.CLOSED, finish);
-    ad.addAdEventListener(AdEventType.ERROR, finish);
+    ad.addAdEventListener(RewardedAdEventType.EARNED_REWARD, () => {
+      earned = true;
+    });
+    ad.addAdEventListener(AdEventType.CLOSED, () => finish(earned));
+    ad.addAdEventListener(AdEventType.ERROR, () => finish(!shown || earned));
     ad.load();
   });
-}
-
-/**
- * Shows `count` interstitials one after another. `onProgress` is called with
- * the 1-based number of the ad about to play.
- */
-export async function showAdsInARow(count: number, onProgress?: (n: number) => void) {
-  await initAds();
-  for (let n = 1; n <= count; n++) {
-    onProgress?.(n);
-    await showOne();
-  }
 }
