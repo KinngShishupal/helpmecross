@@ -21,7 +21,7 @@ interface Props {
 const GAP = 18;
 
 /** TESTING ONLY: opens every stage regardless of progress. Set back to false before release. */
-const UNLOCK_ALL_STAGES = true;
+const UNLOCK_ALL_STAGES = false;
 
 /** The stage list: a snapping carousel where the centred card stands out. */
 export default function HomeScreen({ bestMoves, onSelect, onBack }: Props) {
