@@ -1,0 +1,282 @@
+[
+  {
+    "name": "farmer",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "missionary",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "cannibal",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "husband1",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "wife1",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "husband2",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "wife2",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "husband3",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "wife3",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "husband4",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "wife4",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "father",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "mother",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "son",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "daughter",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "police",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "thief",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "soldier",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "grandpa",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "grandma",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "wolf",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "dog",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "cat",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "mouse",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "goat",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "cabbage",
+    "width": 240,
+    "height": 300
+  },
+  {
+    "name": "boat_back",
+    "width": 720,
+    "height": 260
+  },
+  {
+    "name": "boat_front",
+    "width": 720,
+    "height": 260
+  },
+  {
+    "name": "oar",
+    "width": 120,
+    "height": 484
+  },
+  {
+    "name": "scene",
+    "width": 2200,
+    "height": 1000
+  },
+  {
+    "name": "scene_night",
+    "width": 2200,
+    "height": 1000
+  },
+  {
+    "name": "torch",
+    "width": 120,
+    "height": 328
+  },
+  {
+    "name": "glow",
+    "width": 300,
+    "height": 300
+  },
+  {
+    "name": "cloud",
+    "width": 600,
+    "height": 270
+  },
+  {
+    "name": "ripples",
+    "width": 512,
+    "height": 512
+  },
+  {
+    "name": "trophy",
+    "width": 450,
+    "height": 450
+  },
+  {
+    "name": "splash",
+    "width": 450,
+    "height": 450
+  },
+  {
+    "name": "star",
+    "width": 150,
+    "height": 144
+  },
+  {
+    "name": "star_empty",
+    "width": 150,
+    "height": 144
+  },
+  {
+    "name": "ic_back",
+    "width": 144,
+    "height": 144
+  },
+  {
+    "name": "ic_undo",
+    "width": 144,
+    "height": 144
+  },
+  {
+    "name": "ic_reset",
+    "width": 144,
+    "height": 144
+  },
+  {
+    "name": "ic_hint",
+    "width": 144,
+    "height": 144
+  },
+  {
+    "name": "ic_rules",
+    "width": 144,
+    "height": 144
+  },
+  {
+    "name": "ic_sound",
+    "width": 144,
+    "height": 144
+  },
+  {
+    "name": "ic_sound_off",
+    "width": 144,
+    "height": 144
+  },
+  {
+    "name": "ic_music",
+    "width": 144,
+    "height": 144
+  },
+  {
+    "name": "ic_music_off",
+    "width": 144,
+    "height": 144
+  },
+  {
+    "name": "ic_check",
+    "width": 144,
+    "height": 144
+  },
+  {
+    "name": "ic_play",
+    "width": 144,
+    "height": 144
+  },
+  {
+    "name": "ic_paddle",
+    "width": 144,
+    "height": 144
+  },
+  {
+    "name": "ic_people",
+    "width": 144,
+    "height": 144
+  },
+  {
+    "name": "ic_clock",
+    "width": 144,
+    "height": 144
+  },
+  {
+    "name": "ic_lock",
+    "width": 144,
+    "height": 144
+  },
+  {
+    "name": "card_day",
+    "width": 640,
+    "height": 520
+  },
+  {
+    "name": "card_night",
+    "width": 640,
+    "height": 520
+  }
+]
